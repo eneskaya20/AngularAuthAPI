@@ -22,6 +22,7 @@ namespace AngularAuthAPI.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Department = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

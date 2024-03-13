@@ -1,65 +1,65 @@
-using AngularAuthAPI.Context;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+    using AngularAuthAPI.Context;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.IdentityModel.Tokens;
+    using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+    var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+    // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(option =>
-{
-    option.AddPolicy("MyPolicy", builder =>
+    builder.Services.AddControllers();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddCors(option =>
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
+        option.AddPolicy("MyPolicy", builder =>
+        {
+            builder.AllowAnyOrigin();
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+        });
     });
-});
-builder.Services.AddDbContext<AppDbContext>(option =>
-{
-    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
-});
-
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-
-    x.TokenValidationParameters = new TokenValidationParameters
+    builder.Services.AddDbContext<AppDbContext>(option =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("veryverysecretkey...verrrryyyverrryyysecretone")),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+        option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
+    });
 
-var app = builder.Build();
+    builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
 
-// Configure the HTTP request pipeline.S
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("veryverysecretkey...verrrryyyverrryyysecretone")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
-app.UseHttpsRedirection();
-app.UseCors("MyPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
+    var app = builder.Build();
 
-app.MapControllers();
+    // Configure the HTTP request pipeline.S
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-app.Run();
+    app.UseHttpsRedirection();
+    app.UseCors("MyPolicy");
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
